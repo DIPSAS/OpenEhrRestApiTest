@@ -1,0 +1,11 @@
+{
+	"commit_audit": {
+		"description": "Commit audit description",
+		"committer": {"_type": "PARTY_IDENTIFIED"}
+	},
+	"ehr_status": { 
+		"_type": "VERSIONED_EHR_STATUS",
+		"uid": "_a_valid_uid_",
+		"time_created": "YYYYMMDDThhmmss,SSS(Z|[+-]hhmm)", 
+	}
+}

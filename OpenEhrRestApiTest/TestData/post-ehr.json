@@ -1,0 +1,19 @@
+{
+  "_type":"ehr_status",
+  "subject": {
+    "external_ref":{
+      "namespace" : "test-namespace",
+      "id" : {
+        "value" : "test-id"
+      },
+    },
+  },
+  "is_queryable": true,
+  "is_modifiable": true,
+}
+/*
+{"SubjectId":"asfdasdf",
+  "SubjectNamespace":"ehr_craft",
+  "committerName":"EhrCraft"
+}
+*/
