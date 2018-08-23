@@ -30,10 +30,15 @@ namespace OpenEhrRestApiTest
             _output = output;
         }
 
-
-        [Fact]
-        public async Task Get_EhrWithValidEhrIdShouldReturnSuccess(){
-            throw new NotImplementedException();
+        
+        // Note that the below ID is found in the current test server, and will
+        // not work on other servers. Future versions should ensure that the
+        // test server is populated with test EHRs.
+        [Theory]
+        [InlineData("05fad39b-ecde-4bfe-92ad-cd1accc76a14")]
+        public async Task Get_EhrWithValidEhrIdShouldReturnSuccess(string ehrId){
+            var response = await _client.GetAsync(Url + "/" + ehrId);
+            Assert.Equal(StatusCodes.Status200OK, (int) response.StatusCode);
         }
 
         [Theory]

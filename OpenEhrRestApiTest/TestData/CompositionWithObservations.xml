@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8"?>
+<composition p1:type="COMPOSITION" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" archetype_node_id="openEHR-EHR-COMPOSITION.encounter.v1" xmlns:p1="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.openehr.org/v1">
+  <name>
+    <value>Observasjoner</value>
+    <formatting />
+  </name>
+  <uid xsi:type="OBJECT_VERSION_ID">
+    <value>2c3c4c91-78ef-4830-8453-1f296b76a3c8::9624982A-9F42-41A5-9318-AE13D5F5031F::1</value>
+  </uid>
+  <archetype_details>
+    <archetype_id>
+      <value>openEHR-EHR-COMPOSITION.encounter.v1</value>
+    </archetype_id>
+    <template_id>
+      <value>Observasjoner</value>
+    </template_id>
+    <rm_version>1.0.1</rm_version>
+  </archetype_details>
+  <language>
+    <terminology_id>
+      <value>openehr</value>
+    </terminology_id>
+    <code_string>nb</code_string>
+  </language>
+  <territory>
+    <terminology_id>
+      <value>openehr</value>
+    </terminology_id>
+    <code_string>NO</code_string>
+  </territory>
+  <category xsi:type="DV_CODED_TEXT">
+    <value />
+    <formatting />
+    <defining_code>
+      <terminology_id>
+        <value>openehr</value>
+      </terminology_id>
+      <code_string>433</code_string>
+    </defining_code>
+  </category>
+  <composer xsi:type="PARTY_IDENTIFIED">
+    <name>&lt;party_identified&gt;</name>
+  </composer>
+  <context>
+    <start_time>
+      <magnitude_status>=</magnitude_status>
+      <value>2014-09-06T14:49:34.0017911+02:00</value>
+    </start_time>
+    <location />
+    <setting xsi:type="DV_CODED_TEXT">
+      <value>secondary medical</value>
+      <formatting />
+      <defining_code>
+        <terminology_id>
+          <value>openehr</value>
+        </terminology_id>
+        <code_string>232</code_string>
+      </defining_code>
+    </setting>
+    <other_context xsi:type="ITEM_TREE" archetype_node_id="at0001">
+      <name>
+        <value />
+        <formatting />
+      </name>
+    </other_context>
+  </context>
+  <content xsi:type="OBSERVATION" archetype_node_id="openEHR-EHR-OBSERVATION.blood_pressure.v1">
+    <name>
+      <value>_001</value>
+      <formatting />
+    </name>
+    <archetype_details>
+      <archetype_id>
+        <value>openEHR-EHR-OBSERVATION.blood_pressure.v1</value>
+      </archetype_id>
+      <template_id>
+        <value>Observasjoner</value>
+      </template_id>
+      <rm_version>1.0.1</rm_version>
+    </archetype_details>
+    <language>
+      <terminology_id>
+        <value>ISO_639-1</value>
+      </terminology_id>
+      <code_string>nb</code_string>
+    </language>
+    <encoding>
+      <terminology_id>
+        <value>IANA</value>
+      </terminology_id>
+      <code_string>UTF-8</code_string>
+    </encoding>
+    <subject xsi:type="PARTY_SELF" />
+    <protocol xsi:type="ITEM_TREE" archetype_node_id="at0011">
+      <name>
+        <value>Protokoll</value>
+        <formatting />
+      </name>
+      <items xsi:type="ELEMENT" archetype_node_id="at0013">
+        <name>
+          <value>_001</value>
+          <formatting />
+        </name>
+        <value xsi:type="DV_CODED_TEXT">
+          <value>Voksen lår</value>
+          <formatting />
+          <defining_code>
+            <terminology_id>
+              <value>local</value>
+            </terminology_id>
+            <code_string>at0015</code_string>
+          </defining_code>
+        </value>
+      </items>
+      <items xsi:type="ELEMENT" archetype_node_id="at1035">
+        <name>
+          <value>_001</value>
+          <formatting />
+        </name>
+        <value xsi:type="DV_CODED_TEXT">
+          <value>Auskultasjon</value>
+          <formatting />
+          <defining_code>
+            <terminology_id>
+              <value>local</value>
+            </terminology_id>
+            <code_string>at1036</code_string>
+          </defining_code>
+        </value>
+      </items>
+    </protocol>
+    <data archetype_node_id="at0001">
+      <name>
+        <value />
+        <formatting />
+      </name>
+      <origin>
+        <magnitude_status>=</magnitude_status>
+        <value>2014-09-06T14:49:34.001591+02:00</value>
+      </origin>
+      <events xsi:type="POINT_EVENT" archetype_node_id="at0006">
+        <name>
+          <value>_001</value>
+          <formatting />
+        </name>
+        <time>
+          <magnitude_status>=</magnitude_status>
+          <value>2014-09-06T14:49:34.001591+02:00</value>
+        </time>
+        <data xsi:type="ITEM_TREE" archetype_node_id="at0003">
+          <name>
+            <value />
+            <formatting />
+          </name>
+          <items xsi:type="ELEMENT" archetype_node_id="at0004">
+            <name>
+              <value>_001</value>
+              <formatting />
+            </name>
+            <value xsi:type="DV_QUANTITY">
+              <magnitude_status>=</magnitude_status>
+              <magnitude>120</magnitude>
+              <units>mm[Hg]</units>
+              <precision>0</precision>
+            </value>
+          </items>
+          <items xsi:type="ELEMENT" archetype_node_id="at0005">
+            <name>
+              <value>_001</value>
+              <formatting />
+            </name>
+            <value xsi:type="DV_QUANTITY">
+              <magnitude_status>=</magnitude_status>
+              <magnitude>80</magnitude>
+              <units>mm[Hg]</units>
+              <precision>0</precision>
+            </value>
+          </items>
+          <items xsi:type="ELEMENT" archetype_node_id="at0033">
+            <name>
+              <value>_001</value>
+              <formatting />
+            </name>
+            <value xsi:type="DV_TEXT">
+              <value>dette er en kommentar</value>
+              <formatting />
+            </value>
+          </items>
+        </data>
+        <state xsi:type="ITEM_TREE" archetype_node_id="at0007">
+          <name>
+            <value />
+            <formatting />
+          </name>
+        </state>
+      </events>
+    </data>
+  </content>
+  <content xsi:type="OBSERVATION" archetype_node_id="openEHR-EHR-OBSERVATION.body_weight.v1">
+    <name>
+      <value>_001</value>
+      <formatting />
+    </name>
+    <archetype_details>
+      <archetype_id>
+        <value>openEHR-EHR-OBSERVATION.body_weight.v1</value>
+      </archetype_id>
+      <template_id>
+        <value>Observasjoner</value>
+      </template_id>
+      <rm_version>1.0.1</rm_version>
+    </archetype_details>
+    <language>
+      <terminology_id>
+        <value>ISO_639-1</value>
+      </terminology_id>
+      <code_string>nb</code_string>
+    </language>
+    <encoding>
+      <terminology_id>
+        <value>IANA</value>
+      </terminology_id>
+      <code_string>UTF-8</code_string>
+    </encoding>
+    <subject xsi:type="PARTY_SELF" />
+    <protocol xsi:type="ITEM_TREE" archetype_node_id="at0015">
+      <name>
+        <value />
+        <formatting />
+      </name>
+    </protocol>
+    <data archetype_node_id="at0002">
+      <name>
+        <value />
+        <formatting />
+      </name>
+      <origin>
+        <magnitude_status>=</magnitude_status>
+        <value>2014-09-06T14:49:34.001691+02:00</value>
+      </origin>
+      <events xsi:type="POINT_EVENT" archetype_node_id="at0003">
+        <name>
+          <value>_001</value>
+          <formatting />
+        </name>
+        <time>
+          <magnitude_status>=</magnitude_status>
+          <value>2014-09-06T14:49:34.001691+02:00</value>
+        </time>
+        <data xsi:type="ITEM_TREE" archetype_node_id="at0001">
+          <name>
+            <value />
+            <formatting />
+          </name>
+          <items xsi:type="ELEMENT" archetype_node_id="at0004">
+            <name>
+              <value>_001</value>
+              <formatting />
+            </name>
+            <value xsi:type="DV_QUANTITY">
+              <magnitude_status>=</magnitude_status>
+              <magnitude>75</magnitude>
+              <units>kg</units>
+              <precision>0</precision>
+            </value>
+          </items>
+        </data>
+        <state xsi:type="ITEM_TREE" archetype_node_id="at0008">
+          <name>
+            <value>Tilstand</value>
+            <formatting />
+          </name>
+          <items xsi:type="ELEMENT" archetype_node_id="at0009">
+            <name>
+              <value>_001</value>
+              <formatting />
+            </name>
+            <value xsi:type="DV_CODED_TEXT">
+              <value>Fult påkledd, inkludert sko</value>
+              <formatting />
+              <defining_code>
+                <terminology_id>
+                  <value>local</value>
+                </terminology_id>
+                <code_string>at0010</code_string>
+              </defining_code>
+            </value>
+          </items>
+          <items xsi:type="ELEMENT" archetype_node_id="at0025">
+            <name>
+              <value>_001</value>
+              <formatting />
+            </name>
+            <value xsi:type="DV_TEXT">
+              <value>ja</value>
+              <formatting />
+            </value>
+          </items>
+        </state>
+      </events>
+    </data>
+  </content>
+  <content xsi:type="OBSERVATION" archetype_node_id="openEHR-EHR-OBSERVATION.body_temperature.v1">
+    <name>
+      <value>_001</value>
+      <formatting />
+    </name>
+    <archetype_details>
+      <archetype_id>
+        <value>openEHR-EHR-OBSERVATION.body_temperature.v1</value>
+      </archetype_id>
+      <template_id>
+        <value>Observasjoner</value>
+      </template_id>
+      <rm_version>1.0.1</rm_version>
+    </archetype_details>
+    <language>
+      <terminology_id>
+        <value>ISO_639-1</value>
+      </terminology_id>
+      <code_string>nb</code_string>
+    </language>
+    <encoding>
+      <terminology_id>
+        <value>IANA</value>
+      </terminology_id>
+      <code_string>UTF-8</code_string>
+    </encoding>
+    <subject xsi:type="PARTY_SELF" />
+    <protocol xsi:type="ITEM_TREE" archetype_node_id="at0020">
+      <name>
+        <value>Protokoll</value>
+        <formatting />
+      </name>
+      <items xsi:type="ELEMENT" archetype_node_id="at0021">
+        <name>
+          <value>_001</value>
+          <formatting />
+        </name>
+        <value xsi:type="DV_CODED_TEXT">
+          <value>Øre</value>
+          <formatting />
+          <defining_code>
+            <terminology_id>
+              <value>local</value>
+            </terminology_id>
+            <code_string>at0023</code_string>
+          </defining_code>
+        </value>
+      </items>
+    </protocol>
+    <data archetype_node_id="at0002">
+      <name>
+        <value />
+        <formatting />
+      </name>
+      <origin>
+        <magnitude_status>=</magnitude_status>
+        <value>2014-09-06T14:49:34.0017911+02:00</value>
+      </origin>
+      <events xsi:type="POINT_EVENT" archetype_node_id="at0003">
+        <name>
+          <value>_001</value>
+          <formatting />
+        </name>
+        <time>
+          <magnitude_status>=</magnitude_status>
+          <value>2014-09-06T14:49:34.0017911+02:00</value>
+        </time>
+        <data xsi:type="ITEM_TREE" archetype_node_id="at0001">
+          <name>
+            <value />
+            <formatting />
+          </name>
+          <items xsi:type="ELEMENT" archetype_node_id="at0004">
+            <name>
+              <value>_001</value>
+              <formatting />
+            </name>
+            <value xsi:type="DV_QUANTITY">
+              <magnitude_status>=</magnitude_status>
+              <magnitude>37</magnitude>
+              <units>°C</units>
+              <precision>0</precision>
+            </value>
+          </items>
+        </data>
+        <state xsi:type="ITEM_TREE" archetype_node_id="at0029">
+          <name>
+            <value />
+            <formatting />
+          </name>
+          <items xsi:type="ELEMENT" archetype_node_id="at0030">
+            <name>
+              <value>_001</value>
+              <formatting />
+            </name>
+            <value xsi:type="DV_CODED_TEXT">
+              <value>Passende bekleding/tildekking</value>
+              <formatting />
+              <defining_code>
+                <terminology_id>
+                  <value>local</value>
+                </terminology_id>
+                <code_string>at0033</code_string>
+              </defining_code>
+            </value>
+          </items>
+        </state>
+      </events>
+    </data>
+  </content>
+  <content xsi:type="OBSERVATION" archetype_node_id="openEHR-EHR-OBSERVATION.height.v1">
+    <name>
+      <value>_001</value>
+      <formatting />
+    </name>
+    <archetype_details>
+      <archetype_id>
+        <value>openEHR-EHR-OBSERVATION.height.v1</value>
+      </archetype_id>
+      <template_id>
+        <value>Observasjoner</value>
+      </template_id>
+      <rm_version>1.0.1</rm_version>
+    </archetype_details>
+    <language>
+      <terminology_id>
+        <value>ISO_639-1</value>
+      </terminology_id>
+      <code_string>nb</code_string>
+    </language>
+    <encoding>
+      <terminology_id>
+        <value>IANA</value>
+      </terminology_id>
+      <code_string>UTF-8</code_string>
+    </encoding>
+    <subject xsi:type="PARTY_SELF" />
+    <protocol xsi:type="ITEM_TREE" archetype_node_id="at0007">
+      <name>
+        <value />
+        <formatting />
+      </name>
+    </protocol>
+    <data archetype_node_id="at0001">
+      <name>
+        <value />
+        <formatting />
+      </name>
+      <origin>
+        <magnitude_status>=</magnitude_status>
+        <value>2014-09-06T14:49:34.0017911+02:00</value>
+      </origin>
+      <events xsi:type="POINT_EVENT" archetype_node_id="at0002">
+        <name>
+          <value>_001</value>
+          <formatting />
+        </name>
+        <time>
+          <magnitude_status>=</magnitude_status>
+          <value>2014-09-06T14:49:34.0017911+02:00</value>
+        </time>
+        <data xsi:type="ITEM_TREE" archetype_node_id="at0003">
+          <name>
+            <value />
+            <formatting />
+          </name>
+          <items xsi:type="ELEMENT" archetype_node_id="at0004">
+            <name>
+              <value>_001</value>
+              <formatting />
+            </name>
+            <value xsi:type="DV_QUANTITY">
+              <magnitude_status>=</magnitude_status>
+              <magnitude>180</magnitude>
+              <units>cm</units>
+              <precision>0</precision>
+            </value>
+          </items>
+        </data>
+        <state xsi:type="ITEM_TREE" archetype_node_id="at0013">
+          <name>
+            <value />
+            <formatting />
+          </name>
+        </state>
+      </events>
+    </data>
+  </content>
+</composition>

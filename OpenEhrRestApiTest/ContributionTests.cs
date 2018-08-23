@@ -2,21 +2,42 @@ using Xunit;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System;
+using System.IO;
+using System.Text;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Http;
 
 namespace OpenEhrRestApiTest
 {
     public class ContributionTests : IClassFixture<OpenEhrRestApiTestFixture>
     {
 
-        private const string Url = "composition";
+        private string Url = "composition";
         private readonly HttpClient _client;
+
+        private readonly string _basePath;
+
         public ContributionTests(OpenEhrRestApiTestFixture fixture){
             _client = fixture.Client;
+            _basePath = fixture.Path;
         }
 
+
+        // Note that the ehdId below must be present on the test server. Future
+        // versions will require to intialize the test server with test EHRs.
         [Fact]
         public async Task Post_CreateNewCompositionShouldReturnSuccess(){
-            throw new NotImplementedException();
+            var ehrId = "05fad39b-ecde-4bfe-92ad-cd1accc76a14"; 
+
+            Url = "ehr/" + ehrId + "/compositions";
+            string composition = System.IO.File.ReadAllText(Path.Combine(_basePath, "TestData/CompositionWithObservations.xml"));
+
+            var content = new StringContent(composition, Encoding.UTF8, "application/xml");
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
+
+            var response = await _client.PostAsync(Url, content);
+
+            Assert.Equal(StatusCodes.Status200OK, (int) response.StatusCode);
         }
     }
 }
