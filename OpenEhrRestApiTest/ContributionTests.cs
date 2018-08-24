@@ -29,11 +29,15 @@ namespace OpenEhrRestApiTest
         public async Task Post_CreateNewCompositionShouldReturnSuccess(){
             var ehrId = "05fad39b-ecde-4bfe-92ad-cd1accc76a14"; 
 
-            Url = "ehr/" + ehrId + "/compositions";
-            string composition = System.IO.File.ReadAllText(Path.Combine(_basePath, "TestData/CompositionWithObservations.xml"));
+            Url = "ehr/" + ehrId + "/composition";
+            string composition = System.IO.File.ReadAllText(Path.Combine(_basePath, "TestData/example-composition.json"));
 
-            var content = new StringContent(composition, Encoding.UTF8, "application/xml");
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
+            var content = new StringContent(composition, Encoding.UTF8, "application/json");
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var committerName = "name=\"test-committer-name\"";
+            committerName = committerName.Replace("\\", String.Empty);
+            content.Headers.Add("openEHR-AUDIT_DETAILS.committer", committerName);
+            content.Headers.Add("openEHR-VERSION.lifecycle_state", "unknown");
 
             var response = await _client.PostAsync(Url, content);
 

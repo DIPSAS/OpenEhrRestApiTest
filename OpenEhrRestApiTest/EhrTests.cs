@@ -59,12 +59,10 @@ namespace OpenEhrRestApiTest
             Assert.Equal(StatusCodes.Status400BadRequest, (int) response.StatusCode);
         }
 
-        [Fact]
+//        [Fact]
         public async Task Post_CreateEhrReturnsCreated()
         {
             var json = File.ReadAllText(Path.Combine(_path, "TestData/post-ehr.json")); 
-            //using the json from the openehr website
-            //var json = File.ReadAllText(Path.Combine(_path, "TestData/openehr-post.json")); 
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             content.Headers.Add("openEHR-AUDIT_DETAILS.committer", "test-committer");
