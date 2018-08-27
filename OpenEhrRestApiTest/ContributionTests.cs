@@ -25,25 +25,65 @@ namespace OpenEhrRestApiTest
 
         // Note that the ehdId below must be present on the test server. Future
         // versions will require to intialize the test server with test EHRs.
-        [Fact]
-        public async Task Post_CreateNewCompositionShouldReturnSuccess(){
+        [Theory]
+        [InlineData(@"name=""John Doe""", @"code_string=""532""")] // lifecycle state 523 = complete
+        public async Task Post_CreateNewCompositionShouldReturnSuccess(string committerName, string lifecycle_state){
             var ehrId = "05fad39b-ecde-4bfe-92ad-cd1accc76a14"; 
-
             Url = "ehr/" + ehrId + "/composition";
-            string composition = System.IO.File.ReadAllText(Path.Combine(_basePath, "TestData/example-composition.json"));
+            string composition = TestComposition();
 
             var content = new StringContent(composition, Encoding.UTF8, "application/json");
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var committerName = "name=\"test-committer-name\"";
-            committerName = committerName.Replace("\\", String.Empty);
-            content.Headers.Add("openEHR-AUDIT_DETAILS.committer", committerName);
-            content.Headers.Add("openEHR-VERSION.lifecycle_state", "unknown");
-
+            AddMandatoryHeaders(content, committerName, lifecycle_state);
             var response = await _client.PostAsync(Url, content);
 
-            Assert.Equal(StatusCodes.Status200OK, (int) response.StatusCode);
+            Assert.Equal(StatusCodes.Status201Created, (int) response.StatusCode);
         }
+
+        [Fact]
+        public async Task Post_CreateNewCompositionWithInvalidCompositionShouldReturnBadRequest(){
+            var ehrId = "05fad39b-ecde-4bfe-92ad-cd1accc76a14"; 
+            Url = "ehr/" + ehrId + "/composition";
+            string composition = @"{""_type"":""XYZ"",""value"":""Vital signs""";
+
+            var content = new StringContent(composition, Encoding.UTF8, "application/json");
+            AddMandatoryHeaders(content);
+            var response = await _client.PostAsync(Url, content);
+
+            Assert.Equal(StatusCodes.Status400BadRequest, (int) response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Post_CreateNewCompositionWithInvalidEhrIdShouldReturnNotFound(){
+            var ehrId = "invalid_Ehr_ID";
+            Url = "ehr/" + ehrId + "/composition";
+            string composition = @"{""_type"":""XYZ"",""value"":""Vital signs""";
+
+            var content = new StringContent(composition, Encoding.UTF8, "application/json");
+            AddMandatoryHeaders(content);
+            var response = await _client.PostAsync(Url, content);
+
+            Assert.Equal(StatusCodes.Status404NotFound, (int) response.StatusCode);
+        }    
+
+        private string TestComposition(){
+            return System.IO.File.ReadAllText(Path.Combine(_basePath, "TestData/example-composition.json"));
+        }   
+
+
+        private void AddMandatoryHeaders(StringContent content){
+            string committerName = @"name=""John Doe""";
+            string lifecycle_state = @"code_string=""532"""; // 532 = complete
+            AddMandatoryHeaders(content, committerName, lifecycle_state);
+        }
+
+        private void AddMandatoryHeaders(StringContent content, string committerName, string lifecycle_state){
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            content.Headers.Add("openEHR-AUDIT_DETAILS.committer", committerName);
+            content.Headers.Add("openEHR-VERSION.lifecycle_state", lifecycle_state);
+        }
+
     }
+
 }
 
 
