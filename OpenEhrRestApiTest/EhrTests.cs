@@ -38,6 +38,12 @@ namespace OpenEhrRestApiTest
         [InlineData("05fad39b-ecde-4bfe-92ad-cd1accc76a14")]
         public async Task Get_EhrWithValidEhrIdShouldReturnSuccess(string ehrId){
             var response = await _client.GetAsync(Url + "/" + ehrId);
+
+            if((int) response.StatusCode != StatusCodes.Status200OK) { 
+                var responseBody =   await response.Content.ReadAsStringAsync();
+                _output.WriteLine(responseBody);
+            }
+            
             Assert.Equal(StatusCodes.Status200OK, (int) response.StatusCode);
         }
 
@@ -48,6 +54,12 @@ namespace OpenEhrRestApiTest
         public async Task Get_EhrWithNonExistingEhrIdShouldReturnNotFound(string ehrId)
         {
             var response = await _client.GetAsync(Url + "/" + ehrId);
+
+            if((int) response.StatusCode != StatusCodes.Status404NotFound) { 
+                var responseBody =   await response.Content.ReadAsStringAsync();
+                _output.WriteLine(responseBody);
+            }
+            
             Assert.Equal(StatusCodes.Status404NotFound, (int) response.StatusCode);
         }
 
@@ -56,22 +68,29 @@ namespace OpenEhrRestApiTest
         public async Task Get_EhrWithInvalidEhrIdShouldReturnBadRequest(string ehrId)
         {
             var response = await _client.GetAsync(Url + ehrId);
+
+            if((int) response.StatusCode != StatusCodes.Status400BadRequest) { 
+                var responseBody =   await response.Content.ReadAsStringAsync();
+                _output.WriteLine(responseBody);
+            }
+            
             Assert.Equal(StatusCodes.Status400BadRequest, (int) response.StatusCode);
         }
 
-//        [Fact]
-        public async Task Post_CreateEhrReturnsCreated()
+        [Fact]
+        public async Task Post_CreateNewEhrReturnsCreated()
         {
             var json = File.ReadAllText(Path.Combine(_path, "TestData/post-ehr.json")); 
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            content.Headers.Add("openEHR-AUDIT_DETAILS.committer", "test-committer");
-            content.Headers.Add("Prefer", "return=representation");
+            Tests.AddMandatoryOpenEhrRestApiHeaders(content);
             
             var response = await _client.PostAsync(Url, content);
-            _output.WriteLine(content.ToString());
-            _output.WriteLine(response.ToString());
-            Assert.Equal(StatusCodes.Status200OK, (int)response.StatusCode);
+            if((int) response.StatusCode != StatusCodes.Status201Created) { 
+                var responseBody =   await response.Content.ReadAsStringAsync();
+                _output.WriteLine(responseBody);
+            }
+
+            Assert.Equal(StatusCodes.Status201Created, (int)response.StatusCode);
          }
     }
 }
