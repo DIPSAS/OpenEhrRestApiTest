@@ -36,14 +36,13 @@ namespace OpenEhrRestApiTest
         // test server is populated with test EHRs.
         [Theory]
         [InlineData("05fad39b-ecde-4bfe-92ad-cd1accc76a14")]
-        public async Task Get_EhrWithValidEhrIdShouldReturnSuccess(string ehrId){
+        public async Task Get_EhrWithValidEhrIdShouldReturnOk(string ehrId){
             var response = await _client.GetAsync(Url + "/" + ehrId);
 
             if((int) response.StatusCode != StatusCodes.Status200OK) { 
                 var responseBody =   await response.Content.ReadAsStringAsync();
                 _output.WriteLine(responseBody);
             }
-            
             Assert.Equal(StatusCodes.Status200OK, (int) response.StatusCode);
         }
 
