@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Http;
+using Xunit.Abstractions;
 
 namespace OpenEhrRestApiTest
 {
@@ -14,12 +15,15 @@ namespace OpenEhrRestApiTest
 
         private string Url = "composition";
         private readonly HttpClient _client;
-
         private readonly string _basePath;
+        private string _testEhrId; 
+        private readonly ITestOutputHelper _output;
 
-        public ContributionTests(OpenEhrRestApiTestFixture fixture){
+        public ContributionTests(OpenEhrRestApiTestFixture fixture, ITestOutputHelper output){
             _client = fixture.Client;
             _basePath = fixture.Path;
+            _output = output;
+            _testEhrId = fixture.TestEhrId;
         }
 
 
@@ -28,21 +32,25 @@ namespace OpenEhrRestApiTest
         [Theory]
         [InlineData("John Doe", "532")] // lifecycle state 523 = complete
         public async Task Post_CreateNewCompositionShouldReturnSuccess(string committerName, string lifecycle_state){
-            var ehrId = "05fad39b-ecde-4bfe-92ad-cd1accc76a14"; 
-            Url = "ehr/" + ehrId + "/composition";
+            Url = "ehr/" + _testEhrId + "/composition";
             string composition = TestComposition();
 
             var content = new StringContent(composition, Encoding.UTF8, "application/json");
             Tests.AddMandatoryOpenEhrRestApiHeaders(content, committerName, lifecycle_state);
             var response = await _client.PostAsync(Url, content);
 
+            if ((int)response.StatusCode != StatusCodes.Status201Created)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                _output.WriteLine(responseBody);
+            }
+
             Assert.Equal(StatusCodes.Status201Created, (int) response.StatusCode);
         }
 
         [Fact]
         public async Task Post_CreateNewCompositionWithInvalidCompositionShouldReturnBadRequest(){
-            var ehrId = "05fad39b-ecde-4bfe-92ad-cd1accc76a14"; 
-            Url = "ehr/" + ehrId + "/composition";
+            Url = "ehr/" + _testEhrId + "/composition";
             string composition = @"{""_type"":""XYZ"",""value"":""Vital signs""";
 
             var content = new StringContent(composition, Encoding.UTF8, "application/json");
@@ -55,7 +63,7 @@ namespace OpenEhrRestApiTest
         [Fact]
         public async Task Post_CreateNewCompositionWithInvalidEhrIdShouldReturnNotFound(){
             var ehrId = "invalid_Ehr_ID";
-            Url = "ehr/" + ehrId + "/composition";
+            Url = "ehr/" + _testEhrId + "/composition";
             string composition = @"{""_type"":""XYZ"",""value"":""Vital signs""";
 
             var content = new StringContent(composition, Encoding.UTF8, "application/json");

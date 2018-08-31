@@ -1,8 +1,18 @@
 using System.Net.Http;
 using System;
 using System.IO;
+using System.Linq;
+using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Headers;
+using System.Text;
+using Xunit;
+using Xunit.Sdk;
+using Xunit.Abstractions;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+
+using  Newtonsoft.Json.Linq;
 
 namespace OpenEhrRestApiTest
 {
@@ -10,7 +20,9 @@ namespace OpenEhrRestApiTest
     {
         public HttpClient Client { get; }
         public IConfiguration Configuration;
-        public string Path {get;}
+        public string Path { get; }
+
+        public string TestEhrId { get; }
 
         public OpenEhrRestApiTestFixture()
         {
@@ -36,36 +48,82 @@ namespace OpenEhrRestApiTest
                 port + baseUrl);
 
             Path = AppDomain.CurrentDomain.BaseDirectory;
+
+            TestEhrId = Tests.CreateTestEhr(Client, Path);
+
         }
 
         public void Dispose()
         {
             Client.Dispose();
         }
-
-
     }
 
-    public class Tests { 
-        public static void AddMandatoryOpenEhrRestApiHeaders(StringContent content){
+    public class Tests
+    {
+        public static string CreateTestEhr(HttpClient client, string basePath)
+        {
+            var content = GetTestEhrPostContent(basePath);
+            var url = "ehr"; 
+            var response = client.PostAsync(url, content);
+
+            var responseBody = Task.Run(() => response.Result.Content.ReadAsStringAsync()).Result;
+            if ((int)response.Result.StatusCode != StatusCodes.Status201Created)
+            {
+                throw new Exception("Could not create new EHR: HTTP" + response.Result.StatusCode.ToString() + " " + responseBody);
+            } else { 
+                JObject ehr = JObject.Parse(responseBody);
+                var ehrId = (string) ehr["ehr_id"];
+                return ehrId;
+            }
+        }
+
+        public static StringContent GetTestEhrPostContent(string basePath){
+            var testEhrStatusFilename = Path.Combine(basePath, "TestData/post-ehr.json");
+            var json = File.ReadAllText(testEhrStatusFilename);
+
+            JObject ehrStatus = JObject.Parse(json);
+            ehrStatus["subject"]["external_ref"]["id"]["value"] = RandomString(5);
+
+            var content = new StringContent(ehrStatus.ToString(), Encoding.UTF8, "application/json");
+            AddMandatoryOpenEhrRestApiHeaders(content);
+            return content;
+        }
+
+        private static Random random = new Random();
+        public static string RandomString(int length)
+        {
+            StringBuilder builder = new StringBuilder();
+            char c;
+            for (int i = 0; i < length; i++)
+            {
+                c = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
+                builder.Append(c);
+            }
+            return builder.ToString();
+        }
+
+        public static void AddMandatoryOpenEhrRestApiHeaders(StringContent content)
+        {
             string committerName = "John Doe";
             string lifecycle_state = "532"; // 532 = complete
             AddMandatoryOpenEhrRestApiHeaders(content, committerName, lifecycle_state);
         }
 
-        public static void AddMandatoryOpenEhrRestApiHeaders(StringContent content,  string committerName, string lifecycle_state){
-            string preferRepresentation  = "representation";
+        public static void AddMandatoryOpenEhrRestApiHeaders(StringContent content, string committerName, string lifecycle_state)
+        {
+            string preferRepresentation = "representation";
             AddMandatoryOpenEhrRestApiHeaders(content, committerName, lifecycle_state, preferRepresentation);
         }
-        public static void AddMandatoryOpenEhrRestApiHeaders(StringContent content, string committerName, string lifecycle_state, string preferRepresentation){
-            var name = @"name="""+committerName+@"""";
-            var state =  @"code_string="""+lifecycle_state+@""""; 
-            var representation = @"return="""+preferRepresentation+@"""";
+        public static void AddMandatoryOpenEhrRestApiHeaders(StringContent content, string committerName, string lifecycle_state, string preferRepresentation)
+        {
+            var name = @"name=""" + committerName + @"""";
+            var state = @"code_string=""" + lifecycle_state + @"""";
+            var representation = @"return=""" + preferRepresentation + @"""";
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             content.Headers.Add("openEHR-AUDIT_DETAILS.committer", name);
             content.Headers.Add("openEHR-VERSION.lifecycle_state", state);
             content.Headers.Add("Prefer", representation);
         }
     }
-
 }

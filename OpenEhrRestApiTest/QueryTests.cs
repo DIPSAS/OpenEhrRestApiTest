@@ -13,13 +13,13 @@ namespace OpenEhrRestApiTest
             _client = fixture.Client;
         }
 
-        [Fact]
+//        [Fact]
         public async Task Post_ExecuteAValidAQLQueryReturnsSuccess(){
             Url += "/aql";
             throw new NotImplementedException();
         }
 
-        [Fact]
+//        [Fact]
         public async Task Get_ExecuteValidAQLQueryReturnsSuccess(){
             Url += "?aql={aql}";
             throw new NotImplementedException();
