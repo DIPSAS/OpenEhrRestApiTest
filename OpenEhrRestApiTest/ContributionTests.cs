@@ -33,11 +33,9 @@ namespace OpenEhrRestApiTest
         [InlineData("John Doe", "532")] // lifecycle state 523 = complete
         public async Task Post_CreateNewCompositionShouldReturnSuccess(string committerName, string lifecycle_state){
             Url = "ehr/" + _testEhrId + "/composition";
-            string composition = TestComposition();
+            var content = Tests.GetTestEhrComposition(_basePath);
 
-            var content = new StringContent(composition, Encoding.UTF8, "application/json");
-            Tests.AddMandatoryOpenEhrRestApiHeaders(content, committerName, lifecycle_state);
-            var response = await _client.PostAsync(Url, content);
+           var response = await _client.PostAsync(Url, content);
 
             if ((int)response.StatusCode != StatusCodes.Status201Created)
             {
@@ -63,22 +61,40 @@ namespace OpenEhrRestApiTest
         [Fact]
         public async Task Post_CreateNewCompositionWithInvalidEhrIdShouldReturnNotFound(){
             var ehrId = "invalid_Ehr_ID";
-            Url = "ehr/" + _testEhrId + "/composition";
+            Url = "ehr/" + ehrId + "/composition";
             string composition = @"{""_type"":""XYZ"",""value"":""Vital signs""";
 
             var content = new StringContent(composition, Encoding.UTF8, "application/json");
             Tests.AddMandatoryOpenEhrRestApiHeaders(content);
             var response = await _client.PostAsync(Url, content);
 
-            Assert.Equal(StatusCodes.Status404NotFound, (int) response.StatusCode);
-        }    
+            var responseBody = await response.Content.ReadAsStringAsync();
+            _output.WriteLine(responseBody);
 
-        private string TestComposition(){
-            return System.IO.File.ReadAllText(Path.Combine(_basePath, "TestData/example-composition.json"));
-        }   
+            Assert.Equal(StatusCodes.Status404NotFound, (int)response.StatusCode);
+        }
 
+        [Fact]
+        public async Task Post_CreateTwoIdenticalCompositionsShouldReturnBadRequest()
+        {
+            Url = "ehr/" + _testEhrId + "/composition";
+            var content = Tests.GetTestEhrComposition(_basePath);
 
+            var response = await _client.PostAsync(Url, content);
 
+            string responseBody;
+            responseBody = await response.Content.ReadAsStringAsync();
+            _output.WriteLine(responseBody);
+
+            Assert.Equal(StatusCodes.Status201Created, (int)response.StatusCode);
+
+            response = await _client.PostAsync(Url, content);
+            responseBody = await response.Content.ReadAsStringAsync();
+            _output.WriteLine(responseBody);
+            
+            Assert.Equal(StatusCodes.Status400BadRequest, (int)response.StatusCode);
+
+        }
     }
 
 }

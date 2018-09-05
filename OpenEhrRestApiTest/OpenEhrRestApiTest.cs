@@ -78,6 +78,22 @@ namespace OpenEhrRestApiTest
             }
         }
 
+        public static StringContent GetTestEhrComposition(string basePath){
+            var testEhrCompositionFilename = Path.Combine(basePath, "TestData/example-composition.json");
+            var json = System.IO.File.ReadAllText(testEhrCompositionFilename);
+
+            JObject composition = JObject.Parse(json);
+            var objectId = Guid.NewGuid();
+            var creatingSystemId = "example.domain.com";
+            var versionTreeId = "1";
+            composition["uid"]["value"] = objectId.ToString() + "::" +creatingSystemId+"::" + versionTreeId;
+
+            var content = new StringContent(composition.ToString(), Encoding.UTF8, "application/json");
+            AddMandatoryOpenEhrRestApiHeaders(content);
+            return content; 
+
+        }
+
         public static StringContent GetTestEhrPostContent(string basePath){
             var testEhrStatusFilename = Path.Combine(basePath, "TestData/post-ehr.json");
             var json = File.ReadAllText(testEhrStatusFilename);
