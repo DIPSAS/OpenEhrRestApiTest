@@ -7,6 +7,8 @@ using System.Text;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Http;
 using Xunit.Abstractions;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 namespace OpenEhrRestApiTest
 {
@@ -35,15 +37,31 @@ namespace OpenEhrRestApiTest
             Url = "ehr/" + _testEhrId + "/composition";
             var content = Tests.GetTestEhrComposition(_basePath);
 
-           var response = await _client.PostAsync(Url, content);
+            var response = await _client.PostAsync(Url, content);
 
-            if ((int)response.StatusCode != StatusCodes.Status201Created)
-            {
-                var responseBody = await response.Content.ReadAsStringAsync();
-                _output.WriteLine(responseBody);
-            }
+            var responseBody = await response.Content.ReadAsStringAsync();
+            JObject composition = JObject.Parse(responseBody);
 
-            Assert.Equal(StatusCodes.Status201Created, (int) response.StatusCode);
+            Assert.Equal(StatusCodes.Status201Created, (int)response.StatusCode);
+            Assert.True(response.Headers.Contains("Location"));
+            Assert.True(response.Content.Headers.Contains("Content-Type"));
+            Assert.True(response.Headers.Contains("ETag"));
+            Assert.NotNull(composition);
+        }
+
+        [Fact]
+        public async Task Get_GetCompositionShouldReturnSuccess(){
+            var compositionVersionId = await Tests.CreateTestComposition(_client, _basePath, _testEhrId);
+
+            Url = "ehr/" + _testEhrId + "/composition/" + compositionVersionId;
+            var response = await _client.GetAsync(Url);
+
+             var responseBody = await response.Content.ReadAsStringAsync();
+             _output.WriteLine(responseBody);
+            JObject composition = JObject.Parse(responseBody);
+
+            Assert.NotNull(composition);
+            Assert.Equal((int) response.StatusCode, StatusCodes.Status200OK);
         }
 
         [Fact]
@@ -59,13 +77,23 @@ namespace OpenEhrRestApiTest
         }
 
         [Fact]
-        public async Task Post_CreateNewCompositionWithInvalidEhrIdShouldReturnNotFound(){
+        public async Task Post_CreateNewCompositionWithInvalidEhrIdShouldReturnBadRequest(){
             var ehrId = "invalid_Ehr_ID";
             Url = "ehr/" + ehrId + "/composition";
-            string composition = @"{""_type"":""XYZ"",""value"":""Vital signs""";
+            var content = Tests.GetTestEhrComposition(_basePath);
+            var response = await _client.PostAsync(Url, content);
 
-            var content = new StringContent(composition, Encoding.UTF8, "application/json");
-            Tests.AddMandatoryOpenEhrRestApiHeaders(content);
+            var responseBody = await response.Content.ReadAsStringAsync();
+            _output.WriteLine(responseBody);
+
+            Assert.Equal(StatusCodes.Status400BadRequest, (int)response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Post_CreateNewCompositionWithUnknownEhrIdShouldReturnNotFound(){
+            var ehrId = Guid.NewGuid();
+            Url = "ehr/" + ehrId + "/composition";
+            var content = Tests.GetTestEhrComposition(_basePath);
             var response = await _client.PostAsync(Url, content);
 
             var responseBody = await response.Content.ReadAsStringAsync();

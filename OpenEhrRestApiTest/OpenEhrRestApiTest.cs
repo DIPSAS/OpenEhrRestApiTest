@@ -78,6 +78,19 @@ namespace OpenEhrRestApiTest
             }
         }
 
+        public async static Task<string> CreateTestComposition(HttpClient client, string basePath, string ehrId)
+        {
+            var Url = "ehr/" + ehrId + "/composition";
+            var content = GetTestEhrComposition(basePath);
+            var response =  await client.PostAsync(Url, content);
+
+            // Get ETag header = composition version id
+            IEnumerable<string> etagheader = response.Headers.GetValues("ETag");
+            var e= etagheader.GetEnumerator();
+            e.MoveNext();
+            return e.Current;
+        }
+
         public static StringContent GetTestEhrComposition(string basePath){
             var testEhrCompositionFilename = Path.Combine(basePath, "TestData/example-composition.json");
             var json = System.IO.File.ReadAllText(testEhrCompositionFilename);
