@@ -70,7 +70,7 @@ namespace OpenEhrRestApiTest
             var responseBody = Task.Run(() => response.Result.Content.ReadAsStringAsync()).Result;
             if ((int)response.Result.StatusCode != StatusCodes.Status201Created)
             {
-                throw new Exception("Could not create new EHR: HTTP" + response.Result.StatusCode.ToString() + " " + responseBody);
+                throw new Exception("Could not create new test EHR: HTTP" + response.Result.StatusCode.ToString() + " " + responseBody);
             } else { 
                 JObject ehr = JObject.Parse(responseBody);
                 var ehrId = (string) ehr["ehr_id"];
