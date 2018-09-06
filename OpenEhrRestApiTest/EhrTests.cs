@@ -96,6 +96,9 @@ namespace OpenEhrRestApiTest
 
             JObject ehr = JObject.Parse(responseBody);
 
+            Assert.True(response.Headers.Contains("Location"), "Response header must contain Location.");
+            Assert.True(response.Content.Headers.Contains("Content-Type"), "Response header must contain Content-Type");
+
             Assert.True(ehr.ContainsKey("system_id"), "Resulting JSON should contain system_id");
             Assert.True(ehr.ContainsKey("ehr_id"), "Resulting JSON should contain ehr_id");
             Assert.True(ehr.ContainsKey("ehr_status"),  "Resulting JSON should contain ehr_status");

@@ -44,7 +44,7 @@ namespace OpenEhrRestApiTest
 
             Assert.Equal(StatusCodes.Status201Created, (int)response.StatusCode);
             Assert.True(response.Headers.Contains("Location"), "Response header must contain Location.");
-            Assert.True(response.Content.Headers.Contains("Content-Type"), "Response header must contain Content-type");
+            Assert.True(response.Content.Headers.Contains("Content-Type"), "Response header must contain Content-Type");
             Assert.True(response.Headers.Contains("ETag"), "Response header must contain ETag.");
             Assert.NotNull(composition);
         }
