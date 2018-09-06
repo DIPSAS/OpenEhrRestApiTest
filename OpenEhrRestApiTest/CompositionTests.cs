@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace OpenEhrRestApiTest
 {
-    public class ContributionTests : IClassFixture<OpenEhrRestApiTestFixture>
+    public class CompositionTests : IClassFixture<OpenEhrRestApiTestFixture>
     {
 
         private string Url = "composition";
@@ -21,7 +21,7 @@ namespace OpenEhrRestApiTest
         private string _testEhrId; 
         private readonly ITestOutputHelper _output;
 
-        public ContributionTests(OpenEhrRestApiTestFixture fixture, ITestOutputHelper output){
+        public CompositionTests(OpenEhrRestApiTestFixture fixture, ITestOutputHelper output){
             _client = fixture.Client;
             _basePath = fixture.Path;
             _output = output;
@@ -43,9 +43,9 @@ namespace OpenEhrRestApiTest
             JObject composition = JObject.Parse(responseBody);
 
             Assert.Equal(StatusCodes.Status201Created, (int)response.StatusCode);
-            Assert.True(response.Headers.Contains("Location"));
-            Assert.True(response.Content.Headers.Contains("Content-Type"));
-            Assert.True(response.Headers.Contains("ETag"));
+            Assert.True(response.Headers.Contains("Location"), "Response header must contain Location.");
+            Assert.True(response.Content.Headers.Contains("Content-Type"), "Response header must contain Content-type");
+            Assert.True(response.Headers.Contains("ETag"), "Response header must contain ETag.");
             Assert.NotNull(composition);
         }
 
