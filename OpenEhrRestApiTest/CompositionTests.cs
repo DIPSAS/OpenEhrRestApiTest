@@ -35,7 +35,7 @@ namespace OpenEhrRestApiTest
         [InlineData("John Doe", "532")] // lifecycle state 523 = complete
         public async Task Post_CreateNewCompositionShouldReturnSuccess(string committerName, string lifecycle_state){
             Url = "ehr/" + _testEhrId + "/composition";
-            var content = Tests.GetTestEhrComposition(_basePath);
+            var content = Tests.GetTestComposition(_basePath);
 
             var response = await _client.PostAsync(Url, content);
 
@@ -80,7 +80,7 @@ namespace OpenEhrRestApiTest
         public async Task Post_CreateNewCompositionWithInvalidEhrIdShouldReturnBadRequest(){
             var ehrId = "invalid_Ehr_ID";
             Url = "ehr/" + ehrId + "/composition";
-            var content = Tests.GetTestEhrComposition(_basePath);
+            var content = Tests.GetTestComposition(_basePath);
             var response = await _client.PostAsync(Url, content);
 
             var responseBody = await response.Content.ReadAsStringAsync();
@@ -93,7 +93,7 @@ namespace OpenEhrRestApiTest
         public async Task Post_CreateNewCompositionWithUnknownEhrIdShouldReturnNotFound(){
             var ehrId = Guid.NewGuid();
             Url = "ehr/" + ehrId + "/composition";
-            var content = Tests.GetTestEhrComposition(_basePath);
+            var content = Tests.GetTestComposition(_basePath);
             var response = await _client.PostAsync(Url, content);
 
             var responseBody = await response.Content.ReadAsStringAsync();
@@ -106,7 +106,7 @@ namespace OpenEhrRestApiTest
         public async Task Post_CreateTwoIdenticalCompositionsShouldReturnBadRequest()
         {
             Url = "ehr/" + _testEhrId + "/composition";
-            var content = Tests.GetTestEhrComposition(_basePath);
+            var content = Tests.GetTestComposition(_basePath);
 
             var response = await _client.PostAsync(Url, content);
 

@@ -81,7 +81,7 @@ namespace OpenEhrRestApiTest
         public async static Task<string> CreateTestComposition(HttpClient client, string basePath, string ehrId)
         {
             var Url = "ehr/" + ehrId + "/composition";
-            var content = GetTestEhrComposition(basePath);
+            var content = GetTestComposition(basePath);
             var response =  await client.PostAsync(Url, content);
 
             // Get ETag header = composition version id
@@ -91,19 +91,37 @@ namespace OpenEhrRestApiTest
             return e.Current;
         }
 
-        public static StringContent GetTestEhrComposition(string basePath){
-            var testEhrCompositionFilename = Path.Combine(basePath, "TestData/example-composition.json");
-            var json = System.IO.File.ReadAllText(testEhrCompositionFilename);
+        public static StringContent GetTestContribution(string basePath)
+        {
+            var testContributionFilename =Path.Combine(basePath, "TestData/example-contribution.json");
+            var json = System.IO.File.ReadAllText(testContributionFilename);
 
+            JObject contribution = JObject.Parse(json);
+
+
+
+            var content = new StringContent(contribution.ToString(), Encoding.UTF8, "application/json");
+            AddMandatoryOpenEhrRestApiHeaders(content);
+            return content; 
+        }
+
+        public static StringContent GetTestComposition(string basePath){
+            var testCompositionFilename = Path.Combine(basePath, "TestData/example-composition.json");
+            var json = System.IO.File.ReadAllText(testCompositionFilename);
+            var composition = parseComposition(json); 
+            var content = new StringContent(composition.ToString(), Encoding.UTF8, "application/json");
+            AddMandatoryOpenEhrRestApiHeaders(content);
+            return content; 
+
+        }
+
+        private static JObject parseComposition(string json){
             JObject composition = JObject.Parse(json);
             var objectId = Guid.NewGuid();
             var creatingSystemId = "example.domain.com";
             var versionTreeId = "1";
             composition["uid"]["value"] = objectId.ToString() + "::" +creatingSystemId+"::" + versionTreeId;
-
-            var content = new StringContent(composition.ToString(), Encoding.UTF8, "application/json");
-            AddMandatoryOpenEhrRestApiHeaders(content);
-            return content; 
+            return composition;
 
         }
 
