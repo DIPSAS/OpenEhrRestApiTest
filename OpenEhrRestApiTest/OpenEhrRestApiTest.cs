@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-using  Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace OpenEhrRestApiTest
 {
@@ -64,16 +64,18 @@ namespace OpenEhrRestApiTest
         public static string CreateTestEhr(HttpClient client, string basePath)
         {
             var content = GetTestEhrPostContent(basePath);
-            var url = "ehr"; 
+            var url = "ehr";
             var response = client.PostAsync(url, content);
 
             var responseBody = Task.Run(() => response.Result.Content.ReadAsStringAsync()).Result;
             if ((int)response.Result.StatusCode != StatusCodes.Status201Created)
             {
                 throw new Exception("Could not create new test EHR: HTTP" + response.Result.StatusCode.ToString() + " " + responseBody);
-            } else { 
+            }
+            else
+            {
                 JObject ehr = JObject.Parse(responseBody);
-                var ehrId = (string) ehr["ehr_id"];
+                var ehrId = (string)ehr["ehr_id"];
                 return ehrId;
             }
         }
@@ -82,50 +84,85 @@ namespace OpenEhrRestApiTest
         {
             var Url = "ehr/" + ehrId + "/composition";
             var content = GetTestComposition(basePath);
-            var response =  await client.PostAsync(Url, content);
+            var response = await client.PostAsync(Url, content);
 
             // Get ETag header = composition version id
             IEnumerable<string> etagheader = response.Headers.GetValues("ETag");
-            var e= etagheader.GetEnumerator();
+            var e = etagheader.GetEnumerator();
             e.MoveNext();
             return e.Current;
         }
 
         public static StringContent GetTestContribution(string basePath)
         {
-            var testContributionFilename =Path.Combine(basePath, "TestData/example-contribution.json");
-            var json = System.IO.File.ReadAllText(testContributionFilename);
+            var contribution = CreateTestContribution(basePath);
+            var content = new StringContent(contribution.ToString(), Encoding.UTF8, "application/json");
+            AddMandatoryOpenEhrRestApiHeaders(content);
+            return content;
+        }
 
-            JObject contribution = JObject.Parse(json);
+        public static StringContent GetInvalidTestContribution(string basePath){
+            var contribution = CreateTestContribution(basePath);
 
-
+            // Sets the changetype of a new contribution from creation to
+            // modification. 
+            contribution["audit"]["change_type"]["defining_code"]["code_string"] = 251;
+            contribution["audit"]["change_type"]["value"] = "modification";
 
             var content = new StringContent(contribution.ToString(), Encoding.UTF8, "application/json");
             AddMandatoryOpenEhrRestApiHeaders(content);
             return content; 
         }
 
-        public static StringContent GetTestComposition(string basePath){
-            var testCompositionFilename = Path.Combine(basePath, "TestData/example-composition.json");
-            var json = System.IO.File.ReadAllText(testCompositionFilename);
-            var composition = parseComposition(json); 
-            var content = new StringContent(composition.ToString(), Encoding.UTF8, "application/json");
-            AddMandatoryOpenEhrRestApiHeaders(content);
-            return content; 
+        private static JObject CreateTestContribution(string basePath){
+            var testContributionFilename = Path.Combine(basePath, "TestData/example-contribution.json");
+            var json = System.IO.File.ReadAllText(testContributionFilename);
+            JObject contribution = JObject.Parse(json);
 
+            JObject composition = getTestCompositionObject(basePath); 
+
+            JObject versionObject = new JObject();
+
+            string compositionNamespace = (string)composition["composer"]["namespace"];
+            versionObject["namespace"] = compositionNamespace;
+
+            versionObject["type"] = "COMPOSITION";
+            versionObject["data"] = composition;
+
+            var versions = new JArray();
+            versions.Add(versionObject); 
+
+            contribution["versions"] = versions; 
+            return contribution;
         }
 
-        private static JObject parseComposition(string json){
+        public static StringContent GetTestComposition(string basePath)
+        {
+            var composition = getTestCompositionObject(basePath);
+            var content = new StringContent(composition.ToString(), Encoding.UTF8, "application/json");
+            AddMandatoryOpenEhrRestApiHeaders(content);
+            return content;
+        }
+
+        private static JObject getTestCompositionObject(string basePath){
+            var testCompositionFilename = Path.Combine(basePath, "TestData/example-composition.json");
+            var json = System.IO.File.ReadAllText(testCompositionFilename);
+            var composition = parseComposition(json);
+            return composition;
+        }
+
+        private static JObject parseComposition(string json)
+        {
             JObject composition = JObject.Parse(json);
             var objectId = Guid.NewGuid();
             var creatingSystemId = "example.domain.com";
             var versionTreeId = "1";
-            composition["uid"]["value"] = objectId.ToString() + "::" +creatingSystemId+"::" + versionTreeId;
+            composition["uid"]["value"] = objectId.ToString() + "::" + creatingSystemId + "::" + versionTreeId;
             return composition;
-
         }
 
-        public static StringContent GetTestEhrPostContent(string basePath){
+        public static StringContent GetTestEhrPostContent(string basePath)
+        {
             var testEhrStatusFilename = Path.Combine(basePath, "TestData/post-ehr.json");
             var json = File.ReadAllText(testEhrStatusFilename);
 
