@@ -56,7 +56,6 @@ namespace OpenEhrRestApiTest
             _output.WriteLine(responseBody);
 
             Assert.Equal(StatusCodes.Status400BadRequest, (int)response.StatusCode);
-
         }
 
         [Theory]
@@ -90,11 +89,36 @@ namespace OpenEhrRestApiTest
             _output.WriteLine(responseBody);
 
             Assert.Equal(StatusCodes.Status404NotFound, (int)response.StatusCode);
+        }
+
+
+        [Fact]
+        public async Task Get_GetContributionReturnsSuccess()
+        {
+            Url = Url + "/" + _testEhrId + "/contribution";
+            var content = Tests.GetTestContribution(_basePath);
+
+            var response = await _client.PostAsync(Url, content);
+
+            Url = response.Headers.Location.ToString();
+
+            response = await _client.GetAsync(Url);
+
+            Assert.Equal(StatusCodes.Status200OK, (int) response.StatusCode);
 
         }
 
 
+        [Fact]
+        public async Task Get_GetNonExistingContributionShouldReturnNotFound()
+        {
+            var invalidId = Guid.NewGuid().ToString();
+            Url = Url + "/" + _testEhrId + "/contribution/" + invalidId;
 
+            var response = await _client.GetAsync(Url);
 
+            Assert.Equal(StatusCodes.Status404NotFound, (int) response.StatusCode);
+
+        }
     }
 }
