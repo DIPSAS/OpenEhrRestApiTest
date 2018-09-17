@@ -111,9 +111,28 @@ namespace OpenEhrRestApiTest
 
             var content = new StringContent(contribution.ToString(), Encoding.UTF8, "application/json");
             AddMandatoryOpenEhrRestApiHeaders(content);
-            return content; 
+            return content;
+        }
+        public static JObject CreateTestAqlQuery(int fetch, int offset)
+        {
+            var aql = "SELECT c FROM COMPOSITION c";
+            return CreateTestAqlQuery(aql, fetch, offset);
         }
 
+        public static JObject CreateTestAqlQuery(string aql, int fetch, int offset){
+            JObject query = new JObject();
+            query["q"] = aql;
+            query["offset"] = offset;
+            query["fetch"] = fetch;
+            return query;
+        }
+
+        public static JObject CreateTestAqlQuery(string aql, Dictionary<string, Object> queryParameters, int fetch, int offset){
+            var query = CreateTestAqlQuery(aql, fetch, offset); 
+            query["query_parameters"] = JObject.FromObject(queryParameters);
+            return query; 
+        }
+        
         private static JObject CreateTestContribution(string basePath){
             var testContributionFilename = Path.Combine(basePath, "TestData/example-contribution.json");
             var json = System.IO.File.ReadAllText(testContributionFilename);
