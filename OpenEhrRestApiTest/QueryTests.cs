@@ -17,17 +17,19 @@ namespace OpenEhrRestApiTest
 
         private readonly ITestOutputHelper _output;
 
-        public QueryTests(OpenEhrRestApiTestFixture fixture, ITestOutputHelper output){
+        public QueryTests(OpenEhrRestApiTestFixture fixture, ITestOutputHelper output)
+        {
             _client = fixture.Client;
-            _output = output; 
+            _output = output;
             _testEhrId = fixture.TestEhrId;
         }
 
         [Theory]
-        [InlineData(0,0)]
-        [InlineData(1,1)]
-        [InlineData(10,0)]
-        public async Task Post_ExecuteAValidAQLQueryReturnsSuccess(int fetch, int offset){
+        [InlineData(0, 0)]
+        [InlineData(1, 1)]
+        [InlineData(10, 0)]
+        public async Task Post_ExecuteAValidAQLQueryReturnsSuccess(int fetch, int offset)
+        {
             Url += "/aql";
 
             var query = Tests.CreateTestAqlQuery(fetch, offset);
@@ -41,10 +43,12 @@ namespace OpenEhrRestApiTest
 
             Assert.NotNull(result["columns"]);
             Assert.NotNull(result["rows"]);
-            Assert.NotNull(result["_type"]);
-            Assert.NotNull(result["_schemaVersion"]);
-            Assert.NotNull(result["_generator"]);
-            Assert.NotNull(result["_created"]);
+            Assert.NotNull(result["meta"]["_type"]);
+            Assert.NotNull(result["meta"]["_schemaVersion"]);
+            Assert.NotNull(result["meta"]["_created"]);
+            Assert.NotNull(result["meta"]["_generator"]);
+            Assert.NotNull(result["meta"]["_executed_aql"]);
+
             Assert.Equal(StatusCodes.Status200OK, (int)response.StatusCode);
         }
 
@@ -57,9 +61,9 @@ namespace OpenEhrRestApiTest
 
             var aql = "select e from ehr e where e/ehr_id/value = '$ehrId'";
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters["ehrId"] = _testEhrId; 
+            parameters["ehrId"] = _testEhrId;
 
-            var query = Tests.CreateTestAqlQuery(aql, parameters,fetch,offset);
+            var query = Tests.CreateTestAqlQuery(aql, parameters, fetch, offset);
 
             var content = new StringContent(query.ToString());
             Tests.AddMandatoryOpenEhrRestApiHeaders(content);
@@ -67,7 +71,7 @@ namespace OpenEhrRestApiTest
             var response = await _client.PostAsync(Url, content);
             var responseBody = await response.Content.ReadAsStringAsync();
             _output.WriteLine(responseBody);
-            
+
             JObject result = JObject.Parse(responseBody);
 
             Assert.Equal(StatusCodes.Status200OK, (int)response.StatusCode);
@@ -76,8 +80,9 @@ namespace OpenEhrRestApiTest
         [Theory]
         [InlineData("")]
         [InlineData("asdf")]
-        public async Task Post_ExececuteInvalidAQLQueryReturnsBadRequest(string aql){
-            
+        public async Task Post_ExececuteInvalidAQLQueryReturnsBadRequest(string aql)
+        {
+
             Url += "/aql";
 
             JObject query = new JObject();
@@ -88,13 +93,7 @@ namespace OpenEhrRestApiTest
 
             var response = await _client.PostAsync(Url, content);
 
-            Assert.Equal(StatusCodes.Status400BadRequest, (int) response.StatusCode);
-        }
-
-        [Fact]
-        public async Task Get_ExecuteValidAQLQueryReturnsSuccess(){
-            Url += "?aql={aql}";
-            throw new NotImplementedException();
+            Assert.Equal(StatusCodes.Status400BadRequest, (int)response.StatusCode);
         }
     }
 }
