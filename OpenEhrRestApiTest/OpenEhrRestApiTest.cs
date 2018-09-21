@@ -42,7 +42,7 @@ namespace OpenEhrRestApiTest
                 throw new Exception("Configuration file `" + configFilename + "` is missing hostname, port or protocol.");
             }
 
-            var baseUrl = "/openehr/latest/";
+            var baseUrl = "/openehr/v0.9/";
 
             Client.BaseAddress = new Uri(protocol + "://" + hostname + ":" +
                 port + baseUrl);
@@ -101,7 +101,8 @@ namespace OpenEhrRestApiTest
             return content;
         }
 
-        public static StringContent GetInvalidTestContribution(string basePath){
+        public static StringContent GetInvalidTestContribution(string basePath)
+        {
             var contribution = CreateTestContribution(basePath);
 
             // Sets the changetype of a new contribution from creation to
@@ -119,7 +120,8 @@ namespace OpenEhrRestApiTest
             return CreateTestAqlQuery(aql, fetch, offset);
         }
 
-        public static JObject CreateTestAqlQuery(string aql, int fetch, int offset){
+        public static JObject CreateTestAqlQuery(string aql, int fetch, int offset)
+        {
             JObject query = new JObject();
             query["q"] = aql;
             query["offset"] = offset;
@@ -127,18 +129,20 @@ namespace OpenEhrRestApiTest
             return query;
         }
 
-        public static JObject CreateTestAqlQuery(string aql, Dictionary<string, Object> queryParameters, int fetch, int offset){
-            var query = CreateTestAqlQuery(aql, fetch, offset); 
+        public static JObject CreateTestAqlQuery(string aql, Dictionary<string, Object> queryParameters, int fetch, int offset)
+        {
+            var query = CreateTestAqlQuery(aql, fetch, offset);
             query["query_parameters"] = JObject.FromObject(queryParameters);
-            return query; 
+            return query;
         }
-        
-        private static JObject CreateTestContribution(string basePath){
+
+        private static JObject CreateTestContribution(string basePath)
+        {
             var testContributionFilename = Path.Combine(basePath, "TestData/example-contribution.json");
             var json = System.IO.File.ReadAllText(testContributionFilename);
             JObject contribution = JObject.Parse(json);
 
-            JObject composition = getTestCompositionObject(basePath); 
+            JObject composition = getTestCompositionObject(basePath);
 
             JObject versionObject = new JObject();
 
@@ -149,9 +153,9 @@ namespace OpenEhrRestApiTest
             versionObject["data"] = composition;
 
             var versions = new JArray();
-            versions.Add(versionObject); 
+            versions.Add(versionObject);
 
-            contribution["versions"] = versions; 
+            contribution["versions"] = versions;
             return contribution;
         }
 
@@ -163,7 +167,8 @@ namespace OpenEhrRestApiTest
             return content;
         }
 
-        private static JObject getTestCompositionObject(string basePath){
+        private static JObject getTestCompositionObject(string basePath)
+        {
             var testCompositionFilename = Path.Combine(basePath, "TestData/example-composition.json");
             var json = System.IO.File.ReadAllText(testCompositionFilename);
             var composition = parseComposition(json);
