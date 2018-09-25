@@ -30,15 +30,7 @@ namespace OpenEhrRestApiTest
 
         public async Task Post_CreateNewEmptyDirectoryShouldReturnSuccess()
         {
-            var folder = new JObject();
-            folder["_type"] = "FOLDER";
-            folder["items"] = new JArray();
-            folder["folders"] = new JArray();
-
-            var content = new StringContent(folder.ToString());
-
-            Tests.AddMandatoryOpenEhrRestApiHeaders(content);
-
+            var content = Tests.CreateEmptyFolderRequest();
             var response = await _client.PostAsync(Url, content);
             var responseBody = await response.Content.ReadAsStringAsync();
             _output.WriteLine(responseBody);
@@ -46,5 +38,29 @@ namespace OpenEhrRestApiTest
             Assert.Equal(StatusCodes.Status201Created, (int)response.StatusCode);
         }
 
+        [Fact]
+        public async Task Post_CreateNewInvalidDirectoryShouldReturnBadRequest()
+        {
+            var folder = Tests.CreateEmptyFolder();
+            folder["items"] = "items should be an array, not a string";
+            var content = Tests.CreateFolderRequest(folder);
+            var response = await _client.PostAsync(Url, content);
+            var responseBody = await response.Content.ReadAsStringAsync();
+            _output.WriteLine(responseBody);
+            Assert.Equal(StatusCodes.Status400BadRequest, (int)response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Post_CreateNewEmptyDirectoryWithInvalidEhrIdShouldReturnNotFound()
+        {
+            var ehrId = Guid.NewGuid();
+            Url = "ehr/" + ehrId + "/directory";
+            var content = Tests.CreateEmptyFolderRequest();
+            var response = await _client.PostAsync(Url, content);
+            var responseBody = await response.Content.ReadAsStringAsync();
+            _output.WriteLine(responseBody);
+
+            Assert.Equal(StatusCodes.Status404NotFound, (int)response.StatusCode);
+        }
     }
 }

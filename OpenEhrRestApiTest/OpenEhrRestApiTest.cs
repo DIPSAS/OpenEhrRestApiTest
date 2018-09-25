@@ -115,6 +115,29 @@ namespace OpenEhrRestApiTest
             AddMandatoryOpenEhrRestApiHeaders(content);
             return content;
         }
+
+        public static StringContent CreateEmptyFolderRequest()
+        {
+            var folder = CreateEmptyFolder();
+            return CreateFolderRequest(folder);
+        }
+        public static StringContent CreateFolderRequest(JObject folder)
+        {
+            var content = new StringContent(folder.ToString());
+            AddMandatoryOpenEhrRestApiHeaders(content);
+            return content;
+        }
+
+        public static JObject CreateEmptyFolder()
+        {
+            var folder = new JObject();
+            folder["_type"] = "FOLDER";
+            folder["items"] = new JArray();
+            folder["folders"] = new JArray();
+            return folder;
+        }
+
+
         public static JObject CreateTestAqlQuery(int fetch, int offset)
         {
             var aql = "SELECT c FROM COMPOSITION c";
