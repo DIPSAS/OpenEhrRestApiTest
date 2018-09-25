@@ -81,6 +81,24 @@ namespace OpenEhrRestApiTest
             }
         }
 
+        public async static Task<string> CreateDummyFolder(HttpClient client, string ehrId)
+        {
+            var content = Tests.CreateEmptyFolderRequest();
+            var url = $"ehr/{ehrId}/directory";
+            var response = client.PostAsync(url, content);
+            var responseBody = Task.Run(() => response.Result.Content.ReadAsStringAsync()).Result;
+
+            if ((int)response.Result.StatusCode != StatusCodes.Status201Created)
+            {
+                throw new Exception($"Could not create test folder: HTTP{response.Result.StatusCode}: {responseBody}");
+            }
+            else
+            {
+                JObject folder = JObject.Parse(responseBody);
+                return (string)folder["id"]["value"];
+            }
+        }
+
         public async static Task<string> CreateTestComposition(HttpClient client, string basePath, string ehrId)
         {
             var Url = "ehr/" + ehrId + "/composition";
@@ -163,7 +181,7 @@ namespace OpenEhrRestApiTest
         private static JObject CreateTestContribution(string basePath)
         {
             var testContributionFilename = Path.Combine(basePath, "TestData/example-contribution.json");
-            var json = System.IO.File.ReadAllText(testContributionFilename);
+            var json = File.ReadAllText(testContributionFilename);
             JObject contribution = JObject.Parse(json);
 
             JObject composition = getTestCompositionObject(basePath);
@@ -194,7 +212,7 @@ namespace OpenEhrRestApiTest
         private static JObject getTestCompositionObject(string basePath)
         {
             var testCompositionFilename = Path.Combine(basePath, "TestData/example-composition.json");
-            var json = System.IO.File.ReadAllText(testCompositionFilename);
+            var json = File.ReadAllText(testCompositionFilename);
             var composition = parseComposition(json);
             return composition;
         }
