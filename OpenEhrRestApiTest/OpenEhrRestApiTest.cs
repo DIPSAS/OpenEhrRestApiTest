@@ -42,7 +42,8 @@ namespace OpenEhrRestApiTest
                 throw new Exception("Configuration file `" + configFilename + "` is missing hostname, port or protocol.");
             }
 
-            var baseUrl = "/openehr/v0.9/";
+            var version = "v0.9";
+            var baseUrl = $"/api/{version}/openehr/";
 
             Client.BaseAddress = new Uri(protocol + "://" + hostname + ":" +
                 port + baseUrl);
