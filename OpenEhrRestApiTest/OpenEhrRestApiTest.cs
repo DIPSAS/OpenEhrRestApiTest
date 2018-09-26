@@ -158,7 +158,7 @@ namespace OpenEhrRestApiTest
 
         public static JObject CreateTestAqlQuery(int fetch, int offset)
         {
-            var aql = "SELECT c FROM COMPOSITION c";
+            var aql = "SELECT c FROM COMPOSITION c limit 1";
             return CreateTestAqlQuery(aql, fetch, offset);
         }
 
@@ -265,6 +265,7 @@ namespace OpenEhrRestApiTest
             string preferRepresentation = "representation";
             AddMandatoryOpenEhrRestApiHeaders(content, committerName, lifecycle_state, preferRepresentation);
         }
+
         public static void AddMandatoryOpenEhrRestApiHeaders(StringContent content, string committerName, string lifecycle_state, string preferRepresentation)
         {
             var name = @"name=""" + committerName + @"""";
@@ -274,6 +275,52 @@ namespace OpenEhrRestApiTest
             content.Headers.Add("openEHR-AUDIT_DETAILS.committer", name);
             content.Headers.Add("openEHR-VERSION.lifecycle_state", state);
             content.Headers.Add("Prefer", representation);
+        }
+
+        public static StringContent GetTestTemplate(string basePath)
+        {
+            var template = ReadTestTemplate(basePath);
+            return CreateTemplateContent(template);
+        }
+
+        // Returns an invalid template, i.e. the first half of a functioning opt file.
+        public static StringContent GetInvalidTestTemplate(string basePath)
+        {
+            var template = ReadTestTemplate(basePath);
+            template = template.Substring(template.Length / 2);
+            return CreateTemplateContent(template);
+        }
+
+        private static string ReadTestTemplate(string basePath)
+        {
+            var testTemplateFilename = Path.Combine(basePath, "TestData/example-bp-temp-weight-template.opt");
+            var template = File.ReadAllText(testTemplateFilename);
+            return template;
+        }
+
+        private static StringContent CreateTemplateContent(string template)
+        {
+            StringContent content = new StringContent(template);
+            AddMandatoryOpenEhrRestApiHeaders(content);
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
+            return content;
+        }
+
+        public static async Task<string> CreateTestTemplate(HttpClient client, string Url, string basePath)
+        {
+            var content = Tests.GetTestTemplate(basePath);
+            var response = await client.PostAsync(Url, content);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if ((int)response.StatusCode != StatusCodes.Status201Created)
+            {
+                throw new Exception("Could not create test template");
+            }
+
+            IEnumerable<string> etagheader = response.Headers.GetValues("Location");
+            var e = etagheader.GetEnumerator();
+            e.MoveNext();
+            return e.Current;
         }
     }
 }
