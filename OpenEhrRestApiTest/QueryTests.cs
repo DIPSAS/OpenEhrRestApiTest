@@ -95,5 +95,30 @@ namespace OpenEhrRestApiTest
 
             Assert.Equal(StatusCodes.Status400BadRequest, (int)response.StatusCode);
         }
+
+        [Theory]
+        [InlineData("select c from composition c")]
+        [InlineData("select c from composition c fetch 1")]
+        [InlineData("select c from composition c fetch 1 offset 2")]
+        public async Task Get_ExecuteValidAQLQueryReturnsSuccess(string aql)
+        {
+            Url += $"/aql?q={aql}";
+
+            var response = await _client.GetAsync(Url);
+
+            Assert.Equal(StatusCodes.Status200OK, (int)response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("select")]
+        [InlineData("invalid query")]
+        public async Task Get_ExecuteInvalidAQLQueryReturnsBadRequest(string aql)
+        {
+            Url += $"/aql?q={aql}";
+
+            var response = await _client.GetAsync(Url);
+
+            Assert.Equal(StatusCodes.Status400BadRequest, (int)response.StatusCode);
+        }
     }
 }

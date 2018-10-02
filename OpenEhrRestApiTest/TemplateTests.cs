@@ -64,6 +64,8 @@ namespace OpenEhrRestApiTest
 
             var response = await _client.GetAsync(templateUrl);
 
+            _client.DefaultRequestHeaders.Add("Accept", "application/xml");
+
             var responseBody = await response.Content.ReadAsStringAsync();
             _output.WriteLine(responseBody);
 
