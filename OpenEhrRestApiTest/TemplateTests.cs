@@ -62,9 +62,9 @@ namespace OpenEhrRestApiTest
             Url = Url + "?type=opt14";
             var templateUrl = await Tests.CreateTestTemplate(_client, Url, _basePath);
 
-            var response = await _client.GetAsync(templateUrl);
-
             _client.DefaultRequestHeaders.Add("Accept", "application/xml");
+
+            var response = await _client.GetAsync(templateUrl);
 
             var responseBody = await response.Content.ReadAsStringAsync();
             _output.WriteLine(responseBody);
