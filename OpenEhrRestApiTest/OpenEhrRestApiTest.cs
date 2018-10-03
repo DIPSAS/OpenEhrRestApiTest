@@ -76,7 +76,7 @@ namespace OpenEhrRestApiTest
             else
             {
                 JObject ehr = JObject.Parse(responseBody);
-                var ehrId = (string)ehr["ehr_id"];
+                var ehrId = (string)ehr["ehr_id"]["value"];
                 return ehrId;
             }
         }

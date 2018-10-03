@@ -29,7 +29,7 @@ namespace OpenEhrRestApiTest
             _client = fixture.Client;
             _path = fixture.Path;
             _output = output;
-            _testEhrId  = fixture.TestEhrId;
+            _testEhrId = fixture.TestEhrId;
         }
 
 
@@ -101,12 +101,9 @@ namespace OpenEhrRestApiTest
 
             Assert.True(ehr.ContainsKey("system_id"), "Resulting JSON should contain system_id");
             Assert.True(ehr.ContainsKey("ehr_id"), "Resulting JSON should contain ehr_id");
-            Assert.True(ehr.ContainsKey("ehr_status"),  "Resulting JSON should contain ehr_status");
-            Assert.True(ehr.ContainsKey("time_created"),  "Resulting JSON should contain time_created");
+            Assert.True(ehr.ContainsKey("ehr_status"), "Resulting JSON should contain ehr_status");
+            Assert.True(ehr.ContainsKey("time_created"), "Resulting JSON should contain time_created");
             Assert.Equal(StatusCodes.Status201Created, (int)response.StatusCode);
-
-            // Valid EHR ID for later use
-            _testEhrId = (string) ehr["ehr_id"];
         }
     }
 }
