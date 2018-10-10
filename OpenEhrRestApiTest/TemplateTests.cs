@@ -32,6 +32,8 @@ namespace OpenEhrRestApiTest
             Url = Url + "?type=opt14";
 
             var content = Tests.GetTestTemplate(_basePath);
+            _client.DefaultRequestHeaders.Add("Accept", "application/xml");
+
             var response = await _client.PostAsync(Url, content);
 
             var responseBody = await response.Content.ReadAsStringAsync();
@@ -56,15 +58,17 @@ namespace OpenEhrRestApiTest
             Assert.Equal(StatusCodes.Status400BadRequest, (int)response.StatusCode);
         }
 
-        [Fact]
-        public async Task Get_ExistingTemplateShouldReturnSuccess()
+        [Theory]
+        [InlineData("application/xml")]
+        [InlineData("application/json")]
+        public async Task Get_ExistingTemplateShouldReturnSuccess(string format)
         {
             Url = Url + "?type=opt14";
             var templateUrl = await Tests.CreateTestTemplate(_client, Url, _basePath);
 
-            _client.DefaultRequestHeaders.Add("Accept", "application/xml");
-
+            _client.DefaultRequestHeaders.Add("Accept", format);
             var response = await _client.GetAsync(templateUrl);
+            _client.DefaultRequestHeaders.Remove("Accept");
 
             var responseBody = await response.Content.ReadAsStringAsync();
             _output.WriteLine(responseBody);
@@ -89,8 +93,9 @@ namespace OpenEhrRestApiTest
         {
             Url = Url + "?type=opt14";
             await Tests.CreateTestTemplate(_client, Url, _basePath);
-
+            _client.DefaultRequestHeaders.Add("Accept", "application/json");
             var response = await _client.GetAsync(Url);
+            _client.DefaultRequestHeaders.Remove("Accept");
 
             var responseBody = await response.Content.ReadAsStringAsync();
             _output.WriteLine(responseBody);

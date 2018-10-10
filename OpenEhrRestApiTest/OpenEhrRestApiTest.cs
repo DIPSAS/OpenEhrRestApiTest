@@ -1,18 +1,13 @@
-using System.Net.Http;
-using System;
-using System.IO;
-using System.Linq;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using Xunit;
-using Xunit.Sdk;
-using Xunit.Abstractions;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-
-using Newtonsoft.Json.Linq;
 
 namespace OpenEhrRestApiTest
 {
@@ -309,7 +304,10 @@ namespace OpenEhrRestApiTest
         public static async Task<string> CreateTestTemplate(HttpClient client, string Url, string basePath)
         {
             var content = Tests.GetTestTemplate(basePath);
+            client.DefaultRequestHeaders.Add("Accept", "application/xml");
             var response = await client.PostAsync(Url, content);
+            client.DefaultRequestHeaders.Remove("Accept");
+
             var responseBody = await response.Content.ReadAsStringAsync();
 
             if ((int)response.StatusCode != StatusCodes.Status201Created)
