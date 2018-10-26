@@ -1,11 +1,10 @@
-using Xunit;
-using System.Threading.Tasks;
-using System.Net.Http;
-using System;
-using Xunit.Abstractions;
-using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace OpenEhrRestApiTest
 {

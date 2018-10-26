@@ -1,18 +1,9 @@
-﻿using System;
-using System.IO;
-using Xunit;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using DIPS.OpenEhr.RM.Common.GenericPackage;
-using Microsoft.AspNetCore.Http;
-using DIPS.OpenEhr.RM.Domain.Ehr.EhrPackage;
-using DIPS.OpenEhr.RM.Support.IdentificationPackage;
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using Xunit.Abstractions;
-using System.Net.Http.Headers;
+﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace OpenEhrRestApiTest
 {
