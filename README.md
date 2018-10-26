@@ -31,13 +31,13 @@ It's possible to target differet OpenEHR REST API servers by modifying the
 First, build the docker image: 
 
 ```
- docker build -t open-ehr-rest-test .
+ docker build -t openehr-rest-test  .
 ```
 
 then run the container
 
 ```
- docker run -e ServerHostname='host.docker.internal' -t open-ehr-rest-test
+ docker run -e ServerHostname='host.docker.internal' -t openehr-rest-test
  ```
 
 You can specify the hostname and ports using the envionrment variables
