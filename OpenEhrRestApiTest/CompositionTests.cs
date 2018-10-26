@@ -1,14 +1,11 @@
-using Xunit;
-using System.Threading.Tasks;
-using System.Net.Http;
-using System;
-using System.IO;
-using System.Text;
-using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Http;
-using Xunit.Abstractions;
 using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
+using System;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace OpenEhrRestApiTest
 {
@@ -32,9 +29,8 @@ namespace OpenEhrRestApiTest
 
         // Note that the ehdId below must be present on the test server. Future
         // versions will require to intialize the test server with test EHRs.
-        [Theory]
-        [InlineData("John Doe", "532")] // lifecycle state 523 = complete
-        public async Task Post_CreateNewCompositionShouldReturnSuccess(string committerName, string lifecycle_state)
+        [Fact]
+        public async Task Post_CreateNewCompositionShouldReturnSuccess()
         {
             Url = "ehr/" + _testEhrId + "/composition";
             var content = Tests.GetTestComposition(_basePath);
@@ -64,7 +60,7 @@ namespace OpenEhrRestApiTest
             _output.WriteLine(responseBody);
             JObject composition = JObject.Parse(responseBody);
 
-            Assert.NotNull(composition);
+            Assert.NotNull(composition["name"]);
             Assert.Equal((int)response.StatusCode, StatusCodes.Status200OK);
         }
 

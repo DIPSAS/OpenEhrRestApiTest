@@ -9,11 +9,13 @@ as a git submodule.
 
 # Run tests
 
+## Local
+
 ```
     $ dotnet test
 ```
 
-# Configuration 
+### Configuration 
 It's possible to target differet OpenEHR REST API servers by modifying the
 [settings.json](OpenEhrRestApiTest/settings.json) file:
 
@@ -24,6 +26,25 @@ It's possible to target differet OpenEHR REST API servers by modifying the
     "Protocol": "http"
 }
 ```
+
+## Docker
+First, build the docker image: 
+
+```
+    docker build -t open-ehr-rest-test .
+```
+
+then run the container
+
+```
+     docker run -e ServerHostname='host.docker.internal' -t open-ehr-rest-test
+ ```
+
+You can specify the hostname and ports using the envionrment variables
+`ServerHostname` and `ServerPort`. The above command with
+`ServerHostname='host.docker.internal'` will run tests against an OpenEHR REST
+API running on the docker host. 
+
 
 # Test Data
 Tests that require input data, such as creating a new composition, use test

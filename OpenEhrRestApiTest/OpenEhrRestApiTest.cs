@@ -28,8 +28,17 @@ namespace OpenEhrRestApiTest
                 .AddJsonFile(configFilename, optional: false, reloadOnChange: true);
             Configuration = builder.Build();
 
-            var hostname = Configuration["ServerHostname"];
-            var port = Configuration["ServerPort"];
+
+            var hostname = Environment.GetEnvironmentVariable("ServerHostname");
+            if (hostname == null)
+            {
+                hostname = Configuration["ServerHostname"];
+            }
+
+            var port = Environment.GetEnvironmentVariable("ServerPort");
+            if(port == null){
+               port = Configuration["ServerPort"];
+            }
             var protocol = Configuration["Protocol"];
 
             if (hostname == null || port == null || protocol == null)
@@ -76,7 +85,7 @@ namespace OpenEhrRestApiTest
             }
         }
 
-        public async static Task<string> CreateDummyFolder(HttpClient client, string ehrId)
+        public static Task<string> CreateDummyFolder(HttpClient client, string ehrId)
         {
             var content = Tests.CreateEmptyFolderRequest();
             var url = $"ehr/{ehrId}/directory";
@@ -90,7 +99,7 @@ namespace OpenEhrRestApiTest
             else
             {
                 JObject folder = JObject.Parse(responseBody);
-                return (string)folder["id"]["value"];
+                return Task.FromResult<string>(folder["id"]["value"].ToString());
             }
         }
 
