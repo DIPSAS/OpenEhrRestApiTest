@@ -36,10 +36,16 @@ namespace OpenEhrRestApiTest
             }
 
             var port = Environment.GetEnvironmentVariable("ServerPort");
-            if(port == null){
-               port = Configuration["ServerPort"];
+            if (port == null)
+            {
+                port = Configuration["ServerPort"];
             }
-            var protocol = Configuration["Protocol"];
+
+            var protocol = Environment.GetEnvironmentVariable("Protocol");
+            if (protocol == null)
+            {
+                protocol = Configuration["Protocol"];
+            }
 
             if (hostname == null || port == null || protocol == null)
             {
@@ -178,7 +184,7 @@ namespace OpenEhrRestApiTest
         public static JObject CreateTestAqlQuery(string aql, Dictionary<string, Object> queryParameters, int fetch, int offset)
         {
             var query = CreateTestAqlQuery(aql, fetch, offset);
-            query["query_parameters"] = JObject.FromObject(queryParameters);
+            query["query-parameters"] = JObject.FromObject(queryParameters);
             return query;
         }
 
