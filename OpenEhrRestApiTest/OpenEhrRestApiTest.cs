@@ -168,7 +168,7 @@ namespace OpenEhrRestApiTest
 
         public static JObject CreateTestAqlQuery(int fetch, int offset)
         {
-            var aql = "SELECT c FROM COMPOSITION c limit 1";
+            var aql = "SELECT c FROM COMPOSITION c";
             return CreateTestAqlQuery(aql, fetch, offset);
         }
 

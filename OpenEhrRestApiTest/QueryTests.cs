@@ -24,7 +24,7 @@ namespace OpenEhrRestApiTest
         }
 
         [Theory]
-        [InlineData(0, 0)]
+        [InlineData(0, 1)]
         [InlineData(1, 1)]
         [InlineData(10, 0)]
         public async Task Post_ExecuteAValidAQLQueryReturnsSuccess(int fetch, int offset)
@@ -40,20 +40,27 @@ namespace OpenEhrRestApiTest
             _output.WriteLine(responseBody);
             JObject result = JObject.Parse(responseBody);
 
+            if (fetch > 0)
+            {
+                Assert.NotNull(result["rows"]);
+            }
+
             Assert.NotNull(result["columns"]);
-            Assert.NotNull(result["rows"]);
             Assert.NotNull(result["meta"]["_type"]);
             Assert.NotNull(result["meta"]["_schemaVersion"]);
             Assert.NotNull(result["meta"]["_created"]);
             Assert.NotNull(result["meta"]["_generator"]);
             Assert.NotNull(result["meta"]["_executed_aql"]);
 
+            Assert.Equal((int)result["totalResults"], fetch);
+
             Assert.Equal(StatusCodes.Status200OK, (int)response.StatusCode);
         }
 
         [Theory]
         [InlineData("select c/uid/value as UID, c/name/value as Name from COMPOSITION c where c/name/value = $cName", "cName", "Vital Signs")]
-        public async Task Post_ExecuteAValidAQLQueryWithParametersReturnsSuccess(string aql, string parameterKey, string parameterValue)
+        [InlineData("select c from composition c fetch $num", "num", 2)]
+        public async Task Post_ExecuteAValidAQLQueryWithParametersReturnsSuccess(string aql, string parameterKey, object parameterValue)
         {
             Url += "/aql";
             var fetch = 0;
@@ -97,17 +104,18 @@ namespace OpenEhrRestApiTest
 
         [Theory]
         [InlineData("select c from composition c")]
+        [InlineData("select c from composition c", 0)]
         [InlineData("select c from composition c", 1)]
         [InlineData("select c from composition c", 1, 2)]
-        public async Task Get_ExecuteValidAQLQueryReturnsSuccess(string aql, int fetch = 0, int offset = 0)
+        public async Task Get_ExecuteValidAQLQueryReturnsSuccess(string aql, int? fetch = null, int? offset = null)
         {
             Url += $"/aql?q={aql}";
-            if (fetch != 0)
+            if (fetch != null)
             {
                 Url = Url + "&fetch=" + fetch;
             }
 
-            if (offset != 0)
+            if (offset != null)
             {
                 Url = Url + "&offset=" + offset;
             }
@@ -116,11 +124,11 @@ namespace OpenEhrRestApiTest
 
             Assert.Equal(StatusCodes.Status200OK, (int)response.StatusCode);
 
-            if (fetch != 0)
+            if (fetch != null)
             {
                 var responseBody = await response.Content.ReadAsStringAsync();
                 var responseObject = JObject.Parse(responseBody);
-                Assert.Equal(fetch, responseObject["totalResults"]);
+                Assert.Equal((int)responseObject["totalResults"], fetch);
             }
 
         }
