@@ -51,16 +51,16 @@ namespace OpenEhrRestApiTest
             Assert.Equal(StatusCodes.Status200OK, (int)response.StatusCode);
         }
 
-        [Fact]
-        public async Task Post_ExecuteAValidAQLQueryWithParametersReturnsSuccess()
+        [Theory]
+        [InlineData("select c/uid/value as UID, c/name/value as Name from COMPOSITION c where c/name/value = $cName", "cName", "Vital Signs")]
+        public async Task Post_ExecuteAValidAQLQueryWithParametersReturnsSuccess(string aql, string parameterKey, string parameterValue)
         {
             Url += "/aql";
             var fetch = 0;
             var offset = 0;
 
-            var aql = "select e from ehr e where e/ehr_id/value = '$ehrId'";
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters["ehrId"] = _testEhrId;
+            parameters[parameterKey] = parameterValue;
 
             var query = Tests.CreateTestAqlQuery(aql, parameters, fetch, offset);
 
@@ -97,15 +97,32 @@ namespace OpenEhrRestApiTest
 
         [Theory]
         [InlineData("select c from composition c")]
-        [InlineData("select c from composition c fetch 1")]
-        [InlineData("select c from composition c fetch 1 offset 2")]
-        public async Task Get_ExecuteValidAQLQueryReturnsSuccess(string aql)
+        [InlineData("select c from composition c", 1)]
+        [InlineData("select c from composition c", 1, 2)]
+        public async Task Get_ExecuteValidAQLQueryReturnsSuccess(string aql, int fetch = 0, int offset = 0)
         {
             Url += $"/aql?q={aql}";
+            if (fetch != 0)
+            {
+                Url = Url + "&fetch=" + fetch;
+            }
+
+            if (offset != 0)
+            {
+                Url = Url + "&offset=" + offset;
+            }
 
             var response = await _client.GetAsync(Url);
 
             Assert.Equal(StatusCodes.Status200OK, (int)response.StatusCode);
+
+            if (fetch != 0)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                var responseObject = JObject.Parse(responseBody);
+                Assert.Equal(fetch, responseObject["totalResults"]);
+            }
+
         }
 
         [Theory]
