@@ -1,7 +1,7 @@
-# OpenEHR REST API TEST
-Test utility to verify the correctness of different OpenEhr REST API
+# openEHR REST API TEST
+Test utility to verify the correctness of different openEHR REST API
 implementations. See the 
-[OpenEhr specification]( https://www.openehr.org/programs/specification/workingbaseline)
+[openEHR specification]( https://www.openehr.org/programs/specification/workingbaseline)
 for more information.
 
 Could be used as a .NET test project in existing implementations by adding it
@@ -16,7 +16,7 @@ as a git submodule.
 ```
 
 ### Configuration 
-It's possible to target differet OpenEHR REST API servers by modifying the
+It's possible to target differet openEHR REST API servers by modifying the
 [settings.json](OpenEhrRestApiTest/settings.json) file:
 
 ```
@@ -42,7 +42,7 @@ then run the container
 
 You can specify the hostname and ports using the envionrment variables
 `ServerHostname` and `ServerPort`. The above command with
-`ServerHostname='host.docker.internal'` will run tests against an OpenEHR REST
+`ServerHostname='host.docker.internal'` will run tests against an openEHR REST
 API running on the docker host. 
 
 
