@@ -21,7 +21,17 @@ namespace OpenEhrRestApiTest
 
         public OpenEhrRestApiTestFixture()
         {
-            Client = new HttpClient();
+            if (Environment.GetEnvironmentVariable("IgnoreCertificates") != null)
+            {
+                var httpClientHandler = new HttpClientHandler();
+                httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
+                Client = new HttpClient(httpClientHandler);
+            }
+            else
+            {
+                Client = new HttpClient();
+            }
+
             var configFilename = "settings.json";
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
