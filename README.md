@@ -50,3 +50,6 @@ API running on the docker host.
 Tests that require input data, such as creating a new composition, use test
 data in [TestData](OpenEhrRestApiTest/TestData). These datasets should be
 identical to the test data in the REST API Swagger docs.
+
+# Build Status
+[![Docker Build Status](https://img.shields.io/docker/build/dipsas/openehr-rest-test.svg)](https://hub.docker.com/r/dipsas/openehr-rest-test/)
