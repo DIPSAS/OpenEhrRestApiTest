@@ -24,7 +24,10 @@ namespace OpenEhrRestApiTest
             if (Environment.GetEnvironmentVariable("IgnoreCertificates") != null)
             {
                 var httpClientHandler = new HttpClientHandler();
-                httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
+                httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+                {
+                    return true;
+                };
                 Client = new HttpClient(httpClientHandler);
             }
             else
@@ -59,14 +62,17 @@ namespace OpenEhrRestApiTest
 
             if (hostname == null || port == null || protocol == null)
             {
-                throw new Exception("Configuration file `" + configFilename + "` is missing hostname, port or protocol.");
+                throw new Exception(
+                    "Configuration file `" + configFilename + "` is missing hostname, port or protocol.");
             }
 
-            var version = "v1.0";
-            var baseUrl = $"/openehr/{version}/";
+            var BasePath = Environment.GetEnvironmentVariable("BasePath");
+            if (BasePath == null)
+            {
+                BasePath = Configuration["BasePath"];
+            }
 
-            Client.BaseAddress = new Uri(protocol + "://" + hostname + ":" +
-                port + baseUrl);
+            Client.BaseAddress = new Uri($"{protocol}://{hostname}:{port}{BasePath}/");
 
             Path = AppDomain.CurrentDomain.BaseDirectory;
 

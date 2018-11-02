@@ -26,7 +26,7 @@ namespace OpenEhrRestApiTest
         [Theory]
         [InlineData(0, 1)]
         [InlineData(1, 1)]
-        [InlineData(10, 0)]
+        [InlineData(1, 0)]
         public async Task Post_ExecuteAValidAQLQueryReturnsSuccess(int fetch, int offset)
         {
             Url += "/aql";

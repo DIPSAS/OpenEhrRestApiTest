@@ -1,5 +1,6 @@
 {
   "ServerHostname": "localhost",
-  "ServerPort":  "9000",
-  "Protocol": "http"
+  "ServerPort": "9000",
+  "Protocol": "http",
+  "BasePath": ""
 }

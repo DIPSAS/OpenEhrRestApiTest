@@ -23,9 +23,16 @@ It's possible to target differet openEHR REST API servers by modifying the
 {
     "ServerHostname": "localhost",
     "ServerPort":  "9000",
-    "Protocol": "http"
+    "Protocol": "http",
+    "BasePath": ""
 }
 ```
+
+It is also possible to set these using environment variables. Setting the
+`BasePath` will prepend this path to the URL paths used in the tests. E.g.
+using the above settings will test an openEHR REST API at
+`http://localhost:9000/`, and setting e.g. `BasePath="/openehr/"` will test an
+openEHR REST API at `http://localhost:9000/openehr/`.
 
 ## Docker
 First, build the docker image: 
