@@ -7,9 +7,24 @@ for more information.
 Could be used as a .NET test project in existing implementations by adding it
 as a git submodule.
 
-# Run tests
+# Run
+## Docker
+We automatically build a [Docker](http://docker.io) image no the [Docker Hub](https://hub.docker.com/r/dipsas/openehr-rest-test) 
+with the tests from this repository. Users with Docker installed can run these
+with a single command: 
+
+```
+ docker run -e ServerHostname='host.docker.internal' -t dipsas/openehr-rest-test
+ ```
+
+### Configuration 
+Users can specify the hostname and ports using the envionrment variables
+`ServerHostname` and `ServerPort`. The above command with
+`ServerHostname='host.docker.internal'` will run tests against an openEHR REST
+API running on the docker host. 
 
 ## Local
+It is also possible to run the tests locally without Docker. 
 
 ```
  dotnet test
@@ -33,25 +48,6 @@ It is also possible to set these using environment variables. Setting the
 using the above settings will test an openEHR REST API at
 `http://localhost:9000/`, and setting e.g. `BasePath="/openehr/"` will test an
 openEHR REST API at `http://localhost:9000/openehr/`.
-
-## Docker
-First, build the docker image: 
-
-```
- docker build -t openehr-rest-test .
-```
-
-then run the container
-
-```
- docker run -e ServerHostname='host.docker.internal' -t openehr-rest-test
- ```
-
-You can specify the hostname and ports using the envionrment variables
-`ServerHostname` and `ServerPort`. The above command with
-`ServerHostname='host.docker.internal'` will run tests against an openEHR REST
-API running on the docker host. 
-
 
 # Test Data
 Tests that require input data, such as creating a new composition, use test
